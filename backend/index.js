@@ -1,17 +1,9 @@
-require('dotenv').config()
-const { Sequelize, QueryTypes } = require('sequelize')
-const Matkat = require ('./models/matkat')
-const express = require('express')
-const app = express()
+const app = require("./app");
+const http = require("http");
+const config = require("./utils/config");
 
-const sequelize = new Sequelize(process.env.DATABASE_URL)
+const server = http.createServer(app);
 
-app.get('/api/matkat', async (req, res) => {
-  const matkat = await Matkat.findAll()
-  res.json(matkat)
-})
-
-const PORT= process.env.PORT || 3001
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
-})
+server.listen(config.PORT, () => {
+  console.log(`Server running on port ${config.PORT}`);
+});
