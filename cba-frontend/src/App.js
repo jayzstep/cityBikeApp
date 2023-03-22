@@ -5,9 +5,26 @@ import React, {
   useMemo,
   useRef,
 } from "react";
+import axios from "axios";
 import asematService from "./services/asemat";
 
 import Table from "./components/Table";
+
+const fetchData = async (page, limit) => {
+  try {
+    const response = await axios.get("http://localhost:3001/api/asemat", {
+      params: {
+        page,
+        limit,
+      },
+    });
+    console.log("hei vaan frontendistä", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch data", error.message);
+    throw error;
+  }
+};
 
 function App() {
   const [pageCount, setPageCount] = useState(0);
@@ -15,27 +32,10 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  useEffect(() => {
-    setLoading(true);
-    const asemat = asematService.getAll();
-    setData(asemat.data);
-    setLoading(false);
-  }, []);
-
-  const columns = useMemo(() => [
-    { Header: "id", accessor: "id" },
-    { Header: "nimi", accessor: "nimi" },
-  ]);
-
   return (
     <div>
       <h1>Hello World</h1>
-      <Table
-        pagecount={pageCount}
-        columns={columns}
-        loading={loading}
-        data={data}
-      />
+      <Table fetchData={fetchData} />
     </div>
   );
 }

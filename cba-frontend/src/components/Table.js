@@ -1,100 +1,56 @@
-import React, { Fragment, useEffect, useMemo, useState } from "react";
-import { useTable, usePagination, useExpanded, useSortBy } from "react-table";
-import ClockLoader from "react-spinners/ClockLoader";
+import React, { useState, useEffect } from "react";
+import Pagination from "./Pagination";
 
-const TableComponent = ({
-  columns,
-  data,
-  getData,
-  pageCount: controlledPageCount,
-  loading,
-  isPaginated = true,
-  ...props
-}) => {
-  const defaultColumn = useMemo(
-    () => ({
-      // minWidth: 20,
-      // maxWidth: 115
-    }),
-    []
-  );
+const Table = ({ fetchData }) => {
+  const [data, setData] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    prepareRow,
-    page,
-    canPreviousPage,
-    canNextPage,
-    pageOptions,
-    pageCount,
-    gotoPage,
-    nextPage,
-    previousPage,
-    setPageSize,
-    state: { pageIndex, pageSize },
-  } = useTable(
-    {
-      columns,
-      data,
-      defaultColumn,
-      initialState: { pageIndex: 0, pageSize: 10 },
-      manualPagination: true,
-      manualSortBy: true,
-      autoResetPage: false,
-      pageCount: controlledPageCount,
-    },
-    useSortBy,
-    useExpanded,
-    usePagination
-  );
+  const fetchAndSetData = async (page, limit) => {
+    try {
+      const response = await fetchData(page, limit);
+
+      setData(response.data);
+      setTotalPages(response.totalPages);
+      //type of response.totalPages
+      console.log(typeof response.totalPages);
+    } catch (error) {
+      console.error("Failed to fetch data", error.message);
+    }
+  };
 
   useEffect(() => {
-    getData(pageIndex, pageSize);
-  }, [getData, pageIndex, pageSize]);
+    fetchAndSetData(page, 10);
+  }, [page]);
 
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+  };
+
+  console.log(typeof totalPages, totalPages);
   return (
-    <Fragment>
-      {loading ? (
-        <div>
-          {" "}
-          <ClockLoader size={100} color={"#00BFFF"} loading={loading} />
-        </div>
-      ) : (
-        <div>
-          <table {...getTableProps()}>
-            <thead>
-              {headerGroups.map((headerGroup) => (
-                <tr {...headerGroup.getHeaderGroupProps()}>
-                  {headerGroup.headers.map((column) => (
-                    <th {...column.getHeaderProps()}>
-                      {column.render("Header")}
-                    </th>
-                  ))}
-                </tr>
-              ))}
-            </thead>
-
-            <tbody {...getTableBodyProps()}>
-              {page.map((row, i) => {
-                prepareRow(row);
-                return (
-                  <tr {...row.getRowProps()}>
-                    {row.cells.map((cell) => {
-                      return (
-                        <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
-                      );
-                    })}
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      )}
-    </Fragment>
+    <div>
+      <table>
+        <thead>
+          <tr></tr>
+        </thead>
+        <tbody>
+          {data.map((row) => (
+            <tr key={row.id}>
+              <td>{row.id}</td>
+              <td>{row.nimi}</td>
+              <td>{row.osoite}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <Pagination
+        currentPage={page}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
+    </div>
   );
 };
 
-export default TableComponent;
+export default Table;
