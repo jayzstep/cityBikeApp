@@ -45,8 +45,8 @@ const TableComponent = ({
       autoResetPage: false,
       pageCount: controlledPageCount,
     },
-    useExpanded,
     useSortBy,
+    useExpanded,
     usePagination
   );
 
