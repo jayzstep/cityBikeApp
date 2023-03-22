@@ -10,7 +10,7 @@ const getPaginatedData = async (page, limit) => {
     const { rows, count } = await Asemat.findAndCountAll({
       limit,
       offset,
-      order: [["id", "DESC"]],
+      order: [["id", "ASC"]],
     });
 
     return {
