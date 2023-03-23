@@ -1,11 +1,11 @@
 const router = require("express").Router();
-const Asemat = require("../models/asemat");
+const Matkat = require("../models/matkat");
 
 const getPaginatedData = async (page, limit, order) => {
   const offset = (page - 1) * limit;
 
   try {
-    const { rows, count } = await Asemat.findAndCountAll({
+    const { rows, count } = await Matkat.findAndCountAll({
       limit,
       offset,
       order: [[order, "ASC"]],

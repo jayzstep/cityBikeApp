@@ -17,7 +17,13 @@ Matkat.init(
     return: {
       type: DataTypes.DATE,
     },
+    departure_station_name: {
+      type: DataTypes.TEXT,
+    },
     departure_station_id: {
+      type: DataTypes.TEXT,
+    },
+    return_station_name: {
       type: DataTypes.TEXT,
     },
     return_station_id: {

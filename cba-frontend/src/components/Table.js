@@ -5,16 +5,13 @@ const Table = ({ fetchData }) => {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [order, setOrder] = useState("fid");
+  const [order, setOrder] = useState("id");
 
   const fetchAndSetData = async (page, limit, order) => {
     try {
       const response = await fetchData(page, limit, order);
-
       setData(response.data);
       setTotalPages(response.totalPages);
-      //type of response.totalPages
-      console.log(typeof response.totalPages);
     } catch (error) {
       console.error("Failed to fetch data", error.message);
     }
