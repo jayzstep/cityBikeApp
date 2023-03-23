@@ -10,12 +10,13 @@ import asematService from "./services/asemat";
 
 import Table from "./components/Table";
 
-const fetchData = async (page, limit) => {
+const fetchData = async (page, limit, order) => {
   try {
     const response = await axios.get("http://localhost:3001/api/asemat", {
       params: {
         page,
         limit,
+        order,
       },
     });
     console.log("hei vaan frontendistä", response.data);

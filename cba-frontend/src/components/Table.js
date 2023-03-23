@@ -5,10 +5,11 @@ const Table = ({ fetchData }) => {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [order, setOrder] = useState("fid");
 
-  const fetchAndSetData = async (page, limit) => {
+  const fetchAndSetData = async (page, limit, order) => {
     try {
-      const response = await fetchData(page, limit);
+      const response = await fetchData(page, limit, order);
 
       setData(response.data);
       setTotalPages(response.totalPages);
@@ -20,26 +21,41 @@ const Table = ({ fetchData }) => {
   };
 
   useEffect(() => {
-    fetchAndSetData(page, 10);
-  }, [page]);
+    fetchAndSetData(page, 10, order);
+  }, [page, order]);
 
   const handlePageChange = (newPage) => {
     setPage(newPage);
   };
 
-  console.log(typeof totalPages, totalPages);
+  const handleOrderChange = (newOrder) => {
+    setOrder(newOrder);
+    setPage(1);
+  };
+
   return (
     <div>
       <table>
         <thead>
-          <tr></tr>
+          <tr>
+            {data.length > 0 &&
+              Object.keys(data[0]).map((key) => (
+                <th
+                  onClick={() => {
+                    handleOrderChange(key);
+                  }}
+                >
+                  {key}
+                </th>
+              ))}
+          </tr>
         </thead>
         <tbody>
           {data.map((row) => (
             <tr key={row.id}>
-              <td>{row.id}</td>
-              <td>{row.nimi}</td>
-              <td>{row.osoite}</td>
+              {Object.values(row).map((value) => (
+                <td>{value}</td>
+              ))}
             </tr>
           ))}
         </tbody>
