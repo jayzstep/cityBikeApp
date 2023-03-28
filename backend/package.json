@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "db": "fly proxy 5432 -a jm-cba-fs-db"
   },
   "author": "Jasse Merivirta",
   "license": "ISC",

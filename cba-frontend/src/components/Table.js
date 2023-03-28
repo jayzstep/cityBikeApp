@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Pagination from "./Pagination";
 
-const Table = ({ fetchData }) => {
+const Table = ({ fetchData, table, header }) => {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -9,7 +9,7 @@ const Table = ({ fetchData }) => {
 
   const fetchAndSetData = async (page, limit, order) => {
     try {
-      const response = await fetchData(page, limit, order);
+      const response = await fetchData(page, limit, order, table);
       setData(response.data);
       setTotalPages(response.totalPages);
     } catch (error) {
@@ -32,7 +32,8 @@ const Table = ({ fetchData }) => {
 
   return (
     <div>
-      <table>
+      <h1>{header}</h1>
+      <table key={header}>
         <thead>
           <tr>
             {data.length > 0 &&
@@ -41,6 +42,7 @@ const Table = ({ fetchData }) => {
                   onClick={() => {
                     handleOrderChange(key);
                   }}
+                  key={key}
                 >
                   {key}
                 </th>

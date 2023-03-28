@@ -1,12 +1,9 @@
-import React from "react";
-
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   const handleClick = (newPage) => {
     if (newPage > 0 && newPage <= totalPages) {
       onPageChange(newPage);
     }
   };
-  console.log("Pagination - currentPage, totalPages:", currentPage, totalPages);
   return (
     <div>
       <button
