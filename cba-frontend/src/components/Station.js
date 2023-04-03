@@ -1,39 +1,27 @@
 import React, { useState, useEffect } from "react";
-//Hakee väärän id:n, kun klikkaa taulukosta
 
-const Station = ({ fetchAsema, id }) => {
-  const [station, setStation] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+const Station = ({ fetchStation, id }) => {
+  const [station, setStation] = useState({});
 
   useEffect(() => {
     const fetch = async () => {
       try {
-        const response = await fetchAsema(id);
+        const response = await fetchStation(id);
         setStation(response);
       } catch (error) {
-        setError(error);
-      } finally {
-        setLoading(false);
+        console.error("Failed to fetch Station", error.message);
       }
     };
 
     fetch();
-  }, [id]);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
+  }, [fetchStation, id]);
 
   return (
     <div>
       <h2>Station</h2>
       <div>Station ID: {station.id}</div>
       <div>Station name: {station.nimi}</div>
+      <div>Station address: {station.osoite}</div>
     </div>
   );
 };

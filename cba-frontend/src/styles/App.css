@@ -1,0 +1,39 @@
+/* Table Container */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+/* Table Styles */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+  color: #444;
+}
+
+.table th,
+.table td {
+  border: 1px solid #ddd;
+  padding: 0.8rem;
+  text-align: left;
+}
+
+.table th {
+  background-color: #f3f3f3;
+  font-weight: bold;
+  color: #333;
+}
+
+.table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.table tr:hover {
+  background-color: #eaeaea;
+}
+
+.table tbody tr:last-child {
+  border-bottom: 2px solid #333;
+}

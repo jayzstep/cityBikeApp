@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from "react";
 import Pagination from "./Pagination";
+import "../styles/App.css";
 
 const Table = ({ fetchData, setId, table, header }) => {
-  const [data, setData] = useState(["header"]);
+  const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [order, setOrder] = useState("id");
-
-  const headers = Object.keys(data[0]);
+  const [headers, setHeaders] = useState([]);
 
   const fetchAndSetData = async (page, limit, order) => {
     try {
       const response = await fetchData(page, limit, order, table);
       setData(response.data);
       setTotalPages(response.totalPages);
+      setHeaders(Object.keys(response.data[0]));
     } catch (error) {
       console.error("Failed to fetch data", error.message);
     }
@@ -40,22 +41,17 @@ const Table = ({ fetchData, setId, table, header }) => {
       header === "departure_station_id"
     ) {
       setId(row["departure_station_id"]);
-      return;
-    } else if (
-      header === "return_station_name" ||
-      header === "return_station_id"
-    ) {
-      setId(row["return_station_id"]);
-      return;
     }
 
-    return;
+    if (header === "return_station_name" || header === "return_station_id") {
+      setId(row["return_station_id"]);
+    }
   };
 
   return (
-    <div>
+    <div className='table-container'>
       <h1>{header}</h1>
-      <table key={header}>
+      <table className='table' key={header}>
         <thead>
           <tr>
             {data.length > 0 &&

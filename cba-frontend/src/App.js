@@ -21,7 +21,7 @@ const fetchData = async (page, limit, order, table) => {
   }
 };
 
-const fetchAsema = async (id) => {
+const fetchStation = async (id) => {
   try {
     const response = await axios.get(`http://localhost:3001/api/asemat/${id}`);
     return response.data;
@@ -52,7 +52,7 @@ function App() {
         table='asemat'
         header='Asemat'
       />
-      <Station fetchAsema={fetchAsema} id={stationId} />
+      <Station fetchStation={fetchStation} id={stationId} />
     </div>
   );
 }

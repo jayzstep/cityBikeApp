@@ -8,6 +8,7 @@ const app = express();
 
 const asematRouter = require("./controllers/asemat");
 const matkatRouter = require("./controllers/matkat");
+const queriesRouter = require("./controllers/queries");
 
 const sequelize = new Sequelize(process.env.DATABASE_URL);
 
@@ -16,5 +17,7 @@ app.use(cors());
 app.use("/api/asemat", asematRouter);
 
 app.use("/api/matkat", matkatRouter);
+
+app.use("/api/queries", queriesRouter);
 
 module.exports = app;
