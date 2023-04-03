@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
+//Hakee väärän id:n, kun klikkaa taulukosta
 
-const Station = ({ fetchAsema }) => {
+const Station = ({ fetchAsema, id }) => {
   const [station, setStation] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -8,7 +9,7 @@ const Station = ({ fetchAsema }) => {
   useEffect(() => {
     const fetch = async () => {
       try {
-        const response = await fetchAsema(1);
+        const response = await fetchAsema(id);
         setStation(response);
       } catch (error) {
         setError(error);
@@ -18,7 +19,7 @@ const Station = ({ fetchAsema }) => {
     };
 
     fetch();
-  }, [fetchAsema]);
+  }, [id]);
 
   if (loading) {
     return <div>Loading...</div>;

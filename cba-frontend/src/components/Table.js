@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Pagination from "./Pagination";
 
-const Table = ({ fetchData, table, header }) => {
-  const [data, setData] = useState([]);
+const Table = ({ fetchData, setId, table, header }) => {
+  const [data, setData] = useState(["header"]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [order, setOrder] = useState("id");
+
+  const headers = Object.keys(data[0]);
 
   const fetchAndSetData = async (page, limit, order) => {
     try {
@@ -30,6 +32,26 @@ const Table = ({ fetchData, table, header }) => {
     setPage(1);
   };
 
+  const onColumnClick = (header, row) => {
+    console.log("Column/Cell clicked: ", header, row[header]);
+
+    if (
+      header === "departure_station_name" ||
+      header === "departure_station_id"
+    ) {
+      setId(row["departure_station_id"]);
+      return;
+    } else if (
+      header === "return_station_name" ||
+      header === "return_station_id"
+    ) {
+      setId(row["return_station_id"]);
+      return;
+    }
+
+    return;
+  };
+
   return (
     <div>
       <h1>{header}</h1>
@@ -52,8 +74,10 @@ const Table = ({ fetchData, table, header }) => {
         <tbody>
           {data.map((row) => (
             <tr key={row.id}>
-              {Object.values(row).map((value) => (
-                <td>{value}</td>
+              {headers.map((header, cellIndex) => (
+                <td key={cellIndex} onClick={() => onColumnClick(header, row)}>
+                  {row[header]}
+                </td>
               ))}
             </tr>
           ))}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import axios from "axios";
 
 import Table from "./components/Table";
@@ -32,11 +32,27 @@ const fetchAsema = async (id) => {
 };
 
 function App() {
+  const [stationId, setStationId] = useState(1);
+
+  const setId = (id) => {
+    setStationId(id);
+  };
+
   return (
     <div>
-      <Table fetchData={fetchData} table='matkat' header='Matkat' />
-      <Table fetchData={fetchData} table='asemat' header='Asemat' />
-      <Station fetchAsema={fetchAsema} />
+      <Table
+        fetchData={fetchData}
+        setId={setId}
+        table='matkat'
+        header='Matkat'
+      />
+      <Table
+        fetchData={fetchData}
+        setId={setId}
+        table='asemat'
+        header='Asemat'
+      />
+      <Station fetchAsema={fetchAsema} id={stationId} />
     </div>
   );
 }

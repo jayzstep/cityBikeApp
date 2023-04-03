@@ -34,4 +34,13 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/:id", async (req, res) => {
+  try {
+    const asema = await Asemat.findOne({ where: { id: req.params.id } });
+    res.status(200).json(asema);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 module.exports = router;
