@@ -8,10 +8,11 @@ const Table = ({ fetchData, setId, table, header }) => {
   const [totalPages, setTotalPages] = useState(1);
   const [order, setOrder] = useState("id");
   const [headers, setHeaders] = useState([]);
+  const [search, setSearch] = useState("");
 
-  const fetchAndSetData = async (page, limit, order) => {
+  const fetchAndSetData = async (page, limit, order, search, table) => {
     try {
-      const response = await fetchData(page, limit, order, table);
+      const response = await fetchData(page, limit, order, search, table);
       setData(response.data);
       setTotalPages(response.totalPages);
       setHeaders(Object.keys(response.data[0]));
@@ -21,7 +22,7 @@ const Table = ({ fetchData, setId, table, header }) => {
   };
 
   useEffect(() => {
-    fetchAndSetData(page, 10, order);
+    fetchAndSetData(page, 10, order, search, table);
   }, [page, order]);
 
   const handlePageChange = (newPage) => {
@@ -31,6 +32,13 @@ const Table = ({ fetchData, setId, table, header }) => {
   const handleOrderChange = (newOrder) => {
     setOrder(newOrder);
     setPage(1);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    setPage(1);
+    setOrder("id");
+    fetchAndSetData(page, 10, order, search, table);
   };
 
   const onColumnClick = (header, row) => {
@@ -50,6 +58,17 @@ const Table = ({ fetchData, setId, table, header }) => {
 
   return (
     <div className='table-container'>
+      <form onSubmit={handleSubmit}>
+        <input
+          type='text'
+          value={search}
+          name='Search'
+          onChange={({ target }) => setSearch(target.value)}
+          placeholder='Search'
+        />
+        <button type='submit'>Search</button>
+      </form>
+
       <h1>{header}</h1>
       <table className='table' key={header}>
         <thead>

@@ -4,13 +4,14 @@ import axios from "axios";
 import Table from "./components/Table";
 import Station from "./components/Station";
 
-const fetchData = async (page, limit, order, table) => {
+const fetchData = async (page, limit, order, search, table) => {
   try {
     const response = await axios.get(`http://localhost:3001/api/${table}`, {
       params: {
         page,
         limit,
         order,
+        search,
       },
     });
 

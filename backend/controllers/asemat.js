@@ -1,14 +1,30 @@
 const router = require("express").Router();
+const { Sequelize, Op } = require("sequelize");
 const Asemat = require("../models/asemat");
 
-const getPaginatedData = async (page, limit, order) => {
+const getPaginatedData = async (page, limit, order, search) => {
   const offset = (page - 1) * limit;
+
+  const searchCondition = search
+    ? {
+        [Op.or]: [
+          { nimi: { [Op.iLike]: `%${search}%` } },
+          { namn: { [Op.iLike]: `%${search}%` } },
+          { osoite: { [Op.iLike]: `%${search}%` } },
+          { adress: { [Op.iLike]: `%${search}%` } },
+          { kaupunki: { [Op.iLike]: `%${search}%` } },
+          { stad: { [Op.iLike]: `%${search}%` } },
+          { operaattor: { [Op.iLike]: `%${search}%` } },
+        ],
+      }
+    : {};
 
   try {
     const { rows, count } = await Asemat.findAndCountAll({
       limit,
       offset,
       order: [[order, "ASC"]],
+      where: searchCondition,
     });
 
     return {
@@ -27,7 +43,8 @@ router.get("/", async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const order = req.query.order || "id";
-    const paginatedData = await getPaginatedData(page, limit, order);
+    const search = req.query.search.replace(/\s/g, "") || "";
+    const paginatedData = await getPaginatedData(page, limit, order, search);
     res.status(200).json(paginatedData);
   } catch (error) {
     res.status(500).json({ message: error.message });
