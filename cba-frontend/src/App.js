@@ -25,6 +25,7 @@ const fetchData = async (page, limit, order, search, table) => {
 const fetchStation = async (id) => {
   try {
     const response = await axios.get(`http://localhost:3001/api/asemat/${id}`);
+    console.log("response from app.js", response);
     return response.data;
   } catch (error) {
     console.error("Failed to fetch Station", error.message);
@@ -32,8 +33,57 @@ const fetchStation = async (id) => {
   }
 };
 
+const fetchTripsBegun = async (id) => {
+  try {
+    const response = await axios.get(
+      `http://localhost:3001/api/queries/trips_begun`,
+      {
+        params: {
+          id,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch trips begun", error.message);
+    throw error;
+  }
+};
+
+const fetchTripsEnded = async (id) => {
+  try {
+    const response = await axios.get(
+      `http://localhost:3001/api/queries/trips_ended`,
+      {
+        params: {
+          id,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch trips ended", error.message);
+    throw error;
+  }
+};
+
+const fetchStationData = async (id) => {
+  const tripsBegun = fetchTripsBegun(id);
+  const tripsEnded = fetchTripsEnded(id);
+
+  const [begun, ended] = await Promise.all([tripsBegun, tripsEnded]);
+
+  const tripsData = {
+    trips_begun: begun[0]?.trips_begun || 0,
+    trips_ended: ended[0]?.trips_ended || 0,
+  };
+
+  console.log("tripsData from app.js", tripsData);
+  return tripsData;
+};
+
 function App() {
-  const [stationId, setStationId] = useState(1);
+  const [stationId, setStationId] = useState(547);
 
   const setId = (id) => {
     setStationId(id);
@@ -53,7 +103,11 @@ function App() {
         table='asemat'
         header='Asemat'
       />
-      <Station fetchStation={fetchStation} id={stationId} />
+      <Station
+        fetchStation={fetchStation}
+        fetchStationData={fetchStationData}
+        id={stationId}
+      />
     </div>
   );
 }

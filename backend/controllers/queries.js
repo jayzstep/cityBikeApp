@@ -5,6 +5,8 @@ const Asemat = require("../models/asemat");
 
 router.get("/trips_begun", async (req, res) => {
   try {
+    const id = parseInt(req.query.id);
+    console.log("Station ID:", id);
     const tripsBegun = await Matkat.findAll({
       attributes: [
         "departure_station_name",
@@ -14,8 +16,10 @@ router.get("/trips_begun", async (req, res) => {
         ],
       ],
       group: ["departure_station_name"],
+      where: {
+        departure_station_id: id,
+      },
     });
-
     res.json(tripsBegun);
   } catch (error) {
     console.error(error);
@@ -25,6 +29,7 @@ router.get("/trips_begun", async (req, res) => {
 
 router.get("/trips_ended", async (req, res) => {
   try {
+    const id = parseInt(req.query.id);
     const tripsEnded = await Matkat.findAll({
       attributes: [
         "return_station_name",
@@ -34,6 +39,9 @@ router.get("/trips_ended", async (req, res) => {
         ],
       ],
       group: ["return_station_name"],
+      where: {
+        return_station_id: id,
+      },
     });
     res.json(tripsEnded);
   } catch (error) {

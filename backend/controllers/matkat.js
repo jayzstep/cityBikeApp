@@ -4,7 +4,6 @@ const Matkat = require("../models/matkat");
 
 const getPaginatedData = async (page, limit, order, search) => {
   const offset = (page - 1) * limit;
-  console.log("search", search);
 
   const searchCondition = search
     ? {
