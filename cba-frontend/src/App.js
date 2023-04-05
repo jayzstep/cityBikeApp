@@ -25,7 +25,7 @@ const fetchData = async (page, limit, order, search, table) => {
 const fetchStation = async (id) => {
   try {
     const response = await axios.get(`http://localhost:3001/api/asemat/${id}`);
-    console.log("response from app.js", response);
+
     return response.data;
   } catch (error) {
     console.error("Failed to fetch Station", error.message);
@@ -67,15 +67,40 @@ const fetchTripsEnded = async (id) => {
   }
 };
 
+const fetchAverageTrips = async (id) => {
+  try {
+    const response = await axios.get(
+      `http://localhost:3001/api/queries/average_trip_duration`,
+      {
+        params: {
+          id,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Failed to average trip length", error.message);
+    throw error;
+  }
+};
+
 const fetchStationData = async (id) => {
   const tripsBegun = fetchTripsBegun(id);
   const tripsEnded = fetchTripsEnded(id);
+  const averageTrip = fetchAverageTrips(id);
 
-  const [begun, ended] = await Promise.all([tripsBegun, tripsEnded]);
+  const [begun, ended, average] = await Promise.all([
+    tripsBegun,
+    tripsEnded,
+    averageTrip,
+  ]);
+  console.log("tripsBegun", tripsBegun);
+  console.log("averageTrip", averageTrip);
 
   const tripsData = {
     trips_begun: begun[0]?.trips_begun || 0,
     trips_ended: ended[0]?.trips_ended || 0,
+    average_trip_duration: average[0]?.average_trip_duration || 0,
   };
 
   console.log("tripsData from app.js", tripsData);

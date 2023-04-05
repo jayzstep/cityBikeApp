@@ -52,6 +52,7 @@ router.get("/trips_ended", async (req, res) => {
 
 router.get("/average_trip_duration", async (req, res) => {
   try {
+    const id = parseInt(req.query.id);
     const averageTripDuration = await Matkat.findAll({
       attributes: [
         "departure_station_name",
@@ -64,6 +65,9 @@ router.get("/average_trip_duration", async (req, res) => {
         ],
       ],
       group: ["departure_station_name"],
+      where: {
+        departure_station_id: id,
+      },
     });
 
     res.json(averageTripDuration);

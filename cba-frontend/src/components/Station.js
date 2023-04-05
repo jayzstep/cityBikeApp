@@ -8,7 +8,7 @@ const Station = ({ fetchStation, fetchStationData, id }) => {
     const fetchAndSetStation = async () => {
       try {
         const response = await fetchStation(id);
-        console.log("response from fetchStation", response);
+
         setStation(response);
       } catch (error) {
         console.error("Failed to fetch Station", error.message);
@@ -18,7 +18,7 @@ const Station = ({ fetchStation, fetchStationData, id }) => {
     const fetchAndSetStationData = async () => {
       try {
         const response = await fetchStationData(id);
-        console.log("response from fetchStationData", response);
+
         setStationData(response);
       } catch (error) {
         console.error("Failed to fetch Station data", error.message);
@@ -28,6 +28,9 @@ const Station = ({ fetchStation, fetchStationData, id }) => {
     fetchAndSetStation();
     fetchAndSetStationData();
   }, [fetchStation, fetchStationData, id]);
+
+  //log stationData to console:
+  console.log("stationData", stationData);
 
   return (
     <div>
@@ -43,6 +46,7 @@ const Station = ({ fetchStation, fetchStationData, id }) => {
         <div>
           <div>Trips begun: {stationData.trips_begun}</div>
           <div>Trips ended: {stationData.trips_ended}</div>
+          <div>Average trip duration: {stationData.average_trip_duration}</div>
         </div>
       )}
     </div>

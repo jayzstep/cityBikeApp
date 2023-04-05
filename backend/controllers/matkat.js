@@ -20,7 +20,17 @@ const getPaginatedData = async (page, limit, order, search) => {
       offset,
       order: [[order, "ASC"]],
       where: searchCondition,
+      // attributes: [
+      //   "departure_station_name",
+      //   "return_station_name",
+      //   "covered_distance_m",
+      //   "duration_s",
+      // ],
     });
+
+    // const data = rows.map((row) => {
+    //   row.get({ plain: true });
+    // });
 
     return {
       data: rows,

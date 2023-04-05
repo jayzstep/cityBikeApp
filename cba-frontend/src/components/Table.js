@@ -4,9 +4,10 @@ import "../styles/App.css";
 
 const Table = ({ fetchData, setId, table, header }) => {
   const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [order, setOrder] = useState("id");
+  const [order, setOrder] = useState("departure_station_name");
   const [headers, setHeaders] = useState([]);
   const [search, setSearch] = useState("");
 
@@ -15,7 +16,6 @@ const Table = ({ fetchData, setId, table, header }) => {
       const response = await fetchData(page, limit, order, search, table);
       setData(response.data);
       setTotalPages(response.totalPages);
-      setHeaders(Object.keys(response.data[0]));
     } catch (error) {
       console.error("Failed to fetch data", error.message);
     }
@@ -24,6 +24,24 @@ const Table = ({ fetchData, setId, table, header }) => {
   useEffect(() => {
     fetchAndSetData(page, 10, order, search, table);
   }, [page, order]);
+
+  useEffect(() => {
+    const filterData = () => {
+      const newData = data.map((row) => ({
+        departure_station_name: row.departure_station_name,
+        return_station_name: row.return_station_name,
+        covered_distance_m: row.covered_distance_m,
+        duration_s: row.duration_s,
+      }));
+      setFilteredData(newData);
+
+      if (newData.length > 0) {
+        setHeaders(Object.keys(newData[0]));
+      }
+    };
+
+    filterData();
+  }, [data]);
 
   const handlePageChange = (newPage) => {
     setPage(newPage);
@@ -37,8 +55,24 @@ const Table = ({ fetchData, setId, table, header }) => {
   const handleSubmit = (event) => {
     event.preventDefault();
     setPage(1);
-    setOrder("id");
+    setOrder("departure_station_name");
     fetchAndSetData(page, 10, order, search, table);
+  };
+
+  const getStationId = (stationName) => {
+    const stationData = data.find(
+      (row) =>
+        row.departure_station_name === stationName ||
+        row.return_station_name === stationName
+    );
+
+    if (!stationData) {
+      return null;
+    }
+
+    return stationData.departure_station_name === stationName
+      ? stationData.departure_station_id
+      : stationData.return_station_id;
   };
 
   const onColumnClick = (header, row) => {
@@ -46,13 +80,9 @@ const Table = ({ fetchData, setId, table, header }) => {
 
     if (
       header === "departure_station_name" ||
-      header === "departure_station_id"
+      header === "return_station_name"
     ) {
-      setId(row["departure_station_id"]);
-    }
-
-    if (header === "return_station_name" || header === "return_station_id") {
-      setId(row["return_station_id"]);
+      setId(getStationId(row[header]));
     }
   };
 
@@ -73,8 +103,8 @@ const Table = ({ fetchData, setId, table, header }) => {
       <table className='table' key={header}>
         <thead>
           <tr>
-            {data.length > 0 &&
-              Object.keys(data[0]).map((key) => (
+            {filteredData.length > 0 &&
+              Object.keys(filteredData[0]).map((key) => (
                 <th
                   onClick={() => {
                     handleOrderChange(key);
@@ -87,7 +117,7 @@ const Table = ({ fetchData, setId, table, header }) => {
           </tr>
         </thead>
         <tbody>
-          {data.map((row) => (
+          {filteredData.map((row) => (
             <tr key={row.id}>
               {headers.map((header, cellIndex) => (
                 <td key={cellIndex} onClick={() => onColumnClick(header, row)}>
