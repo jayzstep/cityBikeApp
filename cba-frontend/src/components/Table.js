@@ -7,7 +7,7 @@ const Table = ({ fetchData, setId, table, header }) => {
   const [filteredData, setFilteredData] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [order, setOrder] = useState("departure_station_name");
+  const [order, setOrder] = useState("id");
   const [headers, setHeaders] = useState([]);
   const [search, setSearch] = useState("");
 
@@ -26,21 +26,45 @@ const Table = ({ fetchData, setId, table, header }) => {
   }, [page, order]);
 
   useEffect(() => {
-    const filterData = () => {
-      const newData = data.map((row) => ({
-        departure_station_name: row.departure_station_name,
-        return_station_name: row.return_station_name,
-        covered_distance_m: row.covered_distance_m,
-        duration_s: row.duration_s,
-      }));
-      setFilteredData(newData);
+    if (table === "matkat") {
+      const filterData = () => {
+        const newData = data.map((row) => ({
+          departure_station_name: row.departure_station_name,
+          return_station_name: row.return_station_name,
+          covered_distance_m: row.covered_distance_m,
+          duration_s: row.duration_s,
+        }));
+        setFilteredData(newData);
 
-      if (newData.length > 0) {
-        setHeaders(Object.keys(newData[0]));
-      }
-    };
+        if (newData.length > 0) {
+          setHeaders(Object.keys(newData[0]));
+        }
+      };
 
-    filterData();
+      filterData();
+    }
+
+    if (table === "asemat") {
+      const filterData = () => {
+        const newData = data.map((row) => ({
+          nimi: row.nimi,
+          name: row.name,
+          osoite: row.osoite,
+          adress: row.adress,
+          kaupunki: row.kaupunki,
+          stad: row.stad,
+          operaattor: row.operaattor,
+          kapasiteet: row.kapasiteet,
+        }));
+        setFilteredData(newData);
+
+        if (newData.length > 0) {
+          setHeaders(Object.keys(newData[0]));
+        }
+      };
+
+      filterData();
+    }
   }, [data]);
 
   const handlePageChange = (newPage) => {
@@ -55,7 +79,7 @@ const Table = ({ fetchData, setId, table, header }) => {
   const handleSubmit = (event) => {
     event.preventDefault();
     setPage(1);
-    setOrder("departure_station_name");
+    setOrder("id");
     fetchAndSetData(page, 10, order, search, table);
   };
 
@@ -63,16 +87,21 @@ const Table = ({ fetchData, setId, table, header }) => {
     const stationData = data.find(
       (row) =>
         row.departure_station_name === stationName ||
-        row.return_station_name === stationName
+        row.return_station_name === stationName ||
+        row.nimi === stationName
     );
 
     if (!stationData) {
       return null;
     }
-
-    return stationData.departure_station_name === stationName
-      ? stationData.departure_station_id
-      : stationData.return_station_id;
+    if (table === "matkat") {
+      return stationData.departure_station_name === stationName
+        ? stationData.departure_station_id
+        : stationData.return_station_id;
+    }
+    if (table === "asemat") {
+      return stationData.nimi === stationName ? stationData.id : null;
+    }
   };
 
   const onColumnClick = (header, row) => {
@@ -80,7 +109,8 @@ const Table = ({ fetchData, setId, table, header }) => {
 
     if (
       header === "departure_station_name" ||
-      header === "return_station_name"
+      header === "return_station_name" ||
+      header === "nimi"
     ) {
       setId(getStationId(row[header]));
     }
