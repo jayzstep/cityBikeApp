@@ -5,15 +5,19 @@ import Table from "./components/Table";
 import Station from "./components/Station";
 
 const fetchData = async (page, limit, order, search, table) => {
+  console.log("REACT_APP_BASE_URL:", process.env.REACT_APP_BASE_URL);
   try {
-    const response = await axios.get(`http://localhost:3001/api/${table}`, {
-      params: {
-        page,
-        limit,
-        order,
-        search,
-      },
-    });
+    const response = await axios.get(
+      `${process.env.REACT_APP_BASE_URL}/api/${table}`,
+      {
+        params: {
+          page,
+          limit,
+          order,
+          search,
+        },
+      }
+    );
 
     return response.data;
   } catch (error) {
@@ -24,7 +28,9 @@ const fetchData = async (page, limit, order, search, table) => {
 
 const fetchStation = async (id) => {
   try {
-    const response = await axios.get(`http://localhost:3001/api/asemat/${id}`);
+    const response = await axios.get(
+      `${process.env.REACT_APP_BASE_URL}/api/asemat/${id}`
+    );
 
     return response.data;
   } catch (error) {
@@ -36,7 +42,7 @@ const fetchStation = async (id) => {
 const fetchTripsBegun = async (id) => {
   try {
     const response = await axios.get(
-      `http://localhost:3001/api/queries/trips_begun`,
+      `${process.env.REACT_APP_BASE_URL}/api/queries/trips_begun`,
       {
         params: {
           id,
@@ -53,7 +59,7 @@ const fetchTripsBegun = async (id) => {
 const fetchTripsEnded = async (id) => {
   try {
     const response = await axios.get(
-      `http://localhost:3001/api/queries/trips_ended`,
+      `${process.env.REACT_APP_BASE_URL}/api/queries/trips_ended`,
       {
         params: {
           id,
@@ -70,7 +76,7 @@ const fetchTripsEnded = async (id) => {
 const fetchAverageTrips = async (id) => {
   try {
     const response = await axios.get(
-      `http://localhost:3001/api/queries/average_trip_duration`,
+      `${process.env.REACT_APP_BASE_URL}/api/queries/average_trip_duration`,
       {
         params: {
           id,

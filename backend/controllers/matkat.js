@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const { Sequelize, Op } = require("sequelize");
-const Matkat = require("../models/matkat");
+const Matkat = require("../models/Matkat");
 
 const getPaginatedData = async (page, limit, order, search) => {
   const offset = (page - 1) * limit;

@@ -10,12 +10,18 @@ const Table = ({ fetchData, setId, table, header }) => {
   const [order, setOrder] = useState("id");
   const [headers, setHeaders] = useState([]);
   const [search, setSearch] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchAndSetData = async (page, limit, order, search, table) => {
     try {
+      setIsLoading(true);
       const response = await fetchData(page, limit, order, search, table);
-      setData(response.data);
-      setTotalPages(response.totalPages);
+
+      setTimeout(() => {
+        setData(response.data);
+        setTotalPages(response.totalPages);
+        setIsLoading(false);
+      }, 600);
     } catch (error) {
       console.error("Failed to fetch data", error.message);
     }
@@ -26,6 +32,8 @@ const Table = ({ fetchData, setId, table, header }) => {
   }, [page, order]);
 
   useEffect(() => {
+    if (!Array.isArray(data) || data.length === 0) return;
+
     if (table === "matkat") {
       const filterData = () => {
         const newData = data.map((row) => ({
@@ -83,6 +91,13 @@ const Table = ({ fetchData, setId, table, header }) => {
     fetchAndSetData(page, 10, order, search, table);
   };
 
+  const handleReset = () => {
+    setSearch("");
+    setPage(1);
+    setOrder("id");
+    fetchAndSetData(page, 10, order, search, table);
+  };
+
   const getStationId = (stationName) => {
     const stationData = data.find(
       (row) =>
@@ -118,46 +133,56 @@ const Table = ({ fetchData, setId, table, header }) => {
 
   return (
     <div className='table-container'>
-      <form onSubmit={handleSubmit}>
-        <input
-          type='text'
-          value={search}
-          name='Search'
-          onChange={({ target }) => setSearch(target.value)}
-          placeholder='Search'
-        />
-        <button type='submit'>Search</button>
-      </form>
-
       <h1>{header}</h1>
-      <table className='table' key={header}>
-        <thead>
-          <tr>
-            {filteredData.length > 0 &&
-              Object.keys(filteredData[0]).map((key) => (
-                <th
-                  onClick={() => {
-                    handleOrderChange(key);
-                  }}
-                  key={key}
-                >
-                  {key}
-                </th>
-              ))}
-          </tr>
-        </thead>
-        <tbody>
-          {filteredData.map((row) => (
-            <tr key={row.id}>
-              {headers.map((header, cellIndex) => (
-                <td key={cellIndex} onClick={() => onColumnClick(header, row)}>
-                  {row[header]}
-                </td>
-              ))}
+      <div className='search-form-container'>
+        <form className='search-form' onSubmit={handleSubmit}>
+          <input
+            type='text'
+            value={search}
+            name='Search'
+            onChange={({ target }) => setSearch(target.value)}
+            placeholder='Search'
+          />
+          <button type='submit'>Search</button>
+          <button onClick={() => handleReset()}>Reset</button>
+        </form>
+      </div>
+
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : (
+        <table className='table'>
+          <thead>
+            <tr>
+              {filteredData.length > 0 &&
+                Object.keys(filteredData[0]).map((key) => (
+                  <th
+                    onClick={() => {
+                      handleOrderChange(key);
+                    }}
+                    key={key}
+                  >
+                    {key}
+                  </th>
+                ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filteredData.map((row, index) => (
+              <tr key={`${table}-${data[index]?.id || index}`}>
+                {headers.map((header, cellIndex) => (
+                  <td
+                    key={cellIndex}
+                    onClick={() => onColumnClick(header, row)}
+                  >
+                    {row[header]}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
       <Pagination
         currentPage={page}
         totalPages={totalPages}

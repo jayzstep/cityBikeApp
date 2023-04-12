@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const { Sequelize, Op } = require("sequelize");
-const Asemat = require("../models/asemat");
+const Asemat = require("../models/Asemat");
 
 const getPaginatedData = async (page, limit, order, search) => {
   const offset = (page - 1) * limit;

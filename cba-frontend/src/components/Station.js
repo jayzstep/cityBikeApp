@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import "../styles/App.css";
 
 const Station = ({ fetchStation, fetchStationData, id }) => {
   const [station, setStation] = useState({});
@@ -33,21 +34,27 @@ const Station = ({ fetchStation, fetchStationData, id }) => {
   console.log("stationData", stationData);
 
   return (
-    <div>
+    <div className='detail-container'>
       <h2>Station</h2>
       {station && (
-        <div>
-          <div>Station ID: {station.id}</div>
-          <div>Station name: {station.nimi}</div>
-          <div>Station address: {station.osoite}</div>
-        </div>
+        <dl>
+          <dt>Station ID:</dt>
+          <dd>{station.id}</dd>
+          <dt>Station name: </dt>
+          <dd>{station.nimi}</dd>
+          <dt>Station address: </dt>
+          <dd>{station.osoite}</dd>
+        </dl>
       )}
       {stationData && (
-        <div>
-          <div>Trips begun: {stationData.trips_begun}</div>
-          <div>Trips ended: {stationData.trips_ended}</div>
-          <div>Average trip duration: {stationData.average_trip_duration}</div>
-        </div>
+        <dl>
+          <dt>Trips begun: </dt>
+          <dd>{stationData.trips_begun}</dd>
+          <dt>Trips ended: </dt>
+          <dd> {stationData.trips_ended}</dd>
+          <dt>Average trip duration: </dt>
+          <dd>{stationData.average_trip_duration}</dd>
+        </dl>
       )}
     </div>
   );
