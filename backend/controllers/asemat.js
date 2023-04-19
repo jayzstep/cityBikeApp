@@ -43,7 +43,8 @@ router.get("/", async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const order = req.query.order || "id";
-    const search = req.query.search.replace(/\s/g, "") || "";
+    const search = req.query.search ? req.query.search.replace(/\s/g, "") : "";
+
     const paginatedData = await getPaginatedData(page, limit, order, search);
     res.status(200).json(paginatedData);
   } catch (error) {
